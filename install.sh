@@ -15,14 +15,13 @@ echo "" >> /etc/systemd/system/mouse-mover.service
 echo "[Service]" >> /etc/systemd/system/mouse-mover.service
 echo "Type=simple" >> /etc/systemd/system/mouse-mover.service
 echo "ExecStart=/usr/bin/mouse-mover" >> /etc/systemd/system/mouse-mover.service
-echo "WorkingDirectory=/home/mouse-mover" >> /etc/systemd/system/mouse-mover.service
 echo "Restart=on-failure" >> /etc/systemd/system/mouse-mover.service
 echo "RestartSec=5s" >> /etc/systemd/system/mouse-mover.service
-echo "User=root" >> /etc/systemd/system/mouse-mover.service
-echo "Group=root" >> /etc/systemd/system/mouse-mover.service
+echo "User=1000" >> /etc/systemd/system/mouse-mover.service
+echo "Group=1000" >> /etc/systemd/system/mouse-mover.service
 echo "UMask=077" >> /etc/systemd/system/mouse-mover.service
 echo "" >> /etc/systemd/system/mouse-mover.service
 echo "[Install]" >> /etc/systemd/system/mouse-mover.service
-echo "WantedBy=multi-user.target" >> /etc/systemd/system/mouse-mover.service
+echo "WantedBy=graphical.target" >> /etc/systemd/system/mouse-mover.service
 
 systemctl daemon-reload
