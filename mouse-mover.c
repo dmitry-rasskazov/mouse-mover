@@ -97,7 +97,7 @@ void requestProcess(int sd, struct sockaddr_un client_address)
     if(read(sd, &moveCommand, sizeof(moveCommand)) == -1) printError("read command");
 
     struct moveResponse response;
-    if(moveCommand.checksum != checksum(&moveCommand)) {
+    if(moveCommand.checksum != checksum_command(moveCommand)) {
         printf("Incorrect command!");
 
         response.error_code = -1;
@@ -108,7 +108,7 @@ void requestProcess(int sd, struct sockaddr_un client_address)
         response.error_code = 0;
     }
 
-    response.checksum = checksum(&response);
+    response.checksum = checksum_response(response);
     if(write(sd, &response, sizeof(response)) == -1) printError("write response");
 }
 

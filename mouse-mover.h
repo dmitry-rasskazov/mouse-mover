@@ -1,37 +1,35 @@
-#include <stdint.h>
-
 struct moveCommand {
     int pos_x;
     int pos_y;
-    uint8_t checksum;
+    unsigned char checksum;
 };
 
 struct moveResponse {
     int error_code;
-    uint8_t checksum;
+    unsigned char checksum;
 };
 
-uint8_t checksum(void * array, int size);
+unsigned char checksum_native(void *, unsigned int);
 
-uint8_t checksum(struct moveCommand * command)
+unsigned char checksum_command(struct moveCommand command)
 {
-    return checksum((void *) command, sizeof(*command));
+    return checksum_native(&command, sizeof(command));
 }
 
-uint8_t checksum(struct moveResponse * response)
+unsigned char checksum_response(struct moveResponse response)
 {
-    return checksum((void *) response, sizeof(*response));
+    return checksum_native(&response, sizeof(response));
 }
 
-uint8_t checksum(void * array, int size)
+unsigned char checksum_native(void *array, unsigned int size)
 {
     size = size - 1;
-    uint8_t * bytes = (uint8_t *) array;
+    unsigned char * bytes = (unsigned char *) array;
 
-    uint8_t CK_A = 0, CK_B = 0;
-    for(uint8_t i = 0; i < size; i++) {
-        CK_A = CK_A + bytes[i];
-        CK_B = CK_B + CK_A;
+    unsigned char CK_A = 0, CK_B = 0;
+    for(unsigned char i = 0; i < size; i++) {
+        CK_A = (CK_A + bytes[i]) & 0xFF;
+        CK_B = (CK_B + CK_A) & 0xFF;
     }
 
     return CK_B;
