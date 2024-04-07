@@ -52,17 +52,19 @@ int main()
 
     listen(ssd, 1);
 
-    printf("Socket listened\n");
     while(started) {
+        printf("Socket listened\n");
         socklen_t clen = sizeof(client_addr);
         csd = accept(ssd, (struct sockaddr *) &client_addr, &clen);
 
+        printf("Accept successful\n");
         requestProcess(csd, client_addr);
     }
 
     closeSocket(ssd);
     XCloseDisplay( dpy );
-    printf("Service terminated\n");
+
+    return 0;
 }
 
 int openSocket(struct sockaddr_un * server_addr)
@@ -100,13 +102,19 @@ void printError(char * context)
 
 void requestProcess(int sd, struct sockaddr_un client_address)
 {
-    struct moveCommand moveCommand;
+    struct MoveCommand moveCommand;
 
     if(read(sd, &moveCommand, sizeof(moveCommand)) == -1) printError("read command");
 
-    struct moveResponse response;
+    struct MoveResponse response;
     if(moveCommand.checksum != checksum_command(moveCommand)) {
-        printf("Incorrect command!");
+        printf(
+            "Incorrect command! Checksum invalid: %d != %d. X: %d, Y: %d\n",
+            moveCommand.checksum,
+            checksum_command(moveCommand),
+            moveCommand.pos_x,
+            moveCommand.pos_y
+        );
 
         response.error_code = -1;
 
