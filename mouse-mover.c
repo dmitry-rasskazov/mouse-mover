@@ -29,9 +29,13 @@ void intHandler(int dummy)
 
 int main()
 {
+    printf("Stat program\n");
+
     dpy = XOpenDisplay(NULL);
     root_window = XRootWindow(dpy, 0);
     signal(SIGINT, intHandler);
+
+    printf("Registered SIGINT handler\n");
 
     struct sockaddr_un server_addr, client_addr;
 
@@ -42,10 +46,13 @@ int main()
         return 1;
     }
 
+    printf("Opened socket\n");
+
     server_socket = ssd;
 
     listen(ssd, 1);
 
+    printf("Socket listened\n");
     while(started) {
         socklen_t clen = sizeof(client_addr);
         csd = accept(ssd, (struct sockaddr *) &client_addr, &clen);
@@ -55,6 +62,7 @@ int main()
 
     closeSocket(ssd);
     XCloseDisplay( dpy );
+    printf("Service terminated\n");
 }
 
 int openSocket(struct sockaddr_un * server_addr)
